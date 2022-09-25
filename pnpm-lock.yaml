@@ -10,6 +10,7 @@ specifiers:
   lint-staged: ^13.0.3
   next: 12.3.1
   prettier: ^2.7.1
+  prisma: ^4.3.1
   react: 18.2.0
   react-dom: 18.2.0
   simple-git-hooks: ^2.8.0
@@ -29,6 +30,7 @@ devDependencies:
   eslint-config-prettier: 8.5.0_eslint@8.24.0
   lint-staged: 13.0.3
   prettier: 2.7.1
+  prisma: 4.3.1
   simple-git-hooks: 2.8.0
   typescript: 4.8.3
 
@@ -236,6 +238,11 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
+    dev: true
+
+  /@prisma/engines/4.3.1:
+    resolution: {integrity: sha512-4JF/uMaEDAPdcdZNOrnzE3BvrbGpjgV0FcPT3EVoi6I86fWkloqqxBt+KcK/+fIRR0Pxj66uGR9wVH8U1Y13JA==}
+    requiresBuild: true
     dev: true
 
   /@rushstack/eslint-patch/1.2.0:
@@ -1804,6 +1811,15 @@ packages:
     resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
     engines: {node: '>=10.13.0'}
     hasBin: true
+    dev: true
+
+  /prisma/4.3.1:
+    resolution: {integrity: sha512-90xo06wtqil76Xsi3mNpc4Js3SdDRR5g4qb9h+4VWY4Y8iImJY6xc3PX+C9xxTSt1lr0Q89A0MLkJjd8ax6KiQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 4.3.1
     dev: true
 
   /prop-types/15.8.1:
