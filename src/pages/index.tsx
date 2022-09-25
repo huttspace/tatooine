@@ -1,7 +1,10 @@
-import type { NextPage } from 'next'
+import type { NextPageWithLayout } from "next";
+import { AppLayout } from "../layouts";
 
-const Home: NextPage = () => {
-  return <div>hello world</div>
-}
+const Home: NextPageWithLayout = () => {
+  return <div>hello world</div>;
+};
 
-export default Home
+Home.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default Home;
