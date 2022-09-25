@@ -9,7 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import type { DrawerProps } from "src/types";
+import type { DrawerProps } from "src/typings";
 
 export type Props = {
   title: string;

@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Drawer } from "src/components/Drawer";
-import { DrawerProps } from "src/types";
+import { DrawerProps } from "src/typings";
 
 const schema = z.object({
   name: z.string().min(1),

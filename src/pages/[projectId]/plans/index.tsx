@@ -1,6 +1,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, useDisclosure, Flex, Heading } from "@chakra-ui/react";
-import { NextPageWithLayout } from "next";
+import type { NextPageWithLayout } from "next";
 import { PageHeader } from "src/components/";
 import { AppLayout } from "src/layouts";
 

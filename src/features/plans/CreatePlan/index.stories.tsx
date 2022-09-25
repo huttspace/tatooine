@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react";
 import { CreatePlan } from "./";
-import { DrawerProps } from "src/types/";
+import { DrawerProps } from "src/typings/";
 
 export default {
   title: "features/plans/CreatePlan",
