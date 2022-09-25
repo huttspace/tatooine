@@ -10,17 +10,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Drawer } from "src/components/Drawer";
+import { createPlanInput, CreatePlanInput } from "src/lib/schema";
 import { DrawerProps } from "src/typings";
 
-const schema = z.object({
-  name: z.string().min(1),
-  key: z.string().min(1),
-});
-
-type Schema = z.infer<typeof schema>;
-
 export const CreatePlan = ({ isOpen, onClose }: DrawerProps) => {
-  const form = useForm<Schema>({ resolver: zodResolver(schema), mode: "all" });
+  const form = useForm<CreatePlanInput>({
+    resolver: zodResolver(createPlanInput),
+    mode: "all",
+  });
 
   return (
     <Drawer
