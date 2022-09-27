@@ -1,9 +1,8 @@
 import { t } from "src/lib/trpc/server/createRouter";
-
-const hello = t.procedure.query(() => "hello world");
+import { plansRouter } from "src/lib/trpc/server/routers/plans";
 
 export const appRouter = t.router({
-  hello,
+  plans: plansRouter,
 });
 
 export type AppRouter = typeof appRouter;
