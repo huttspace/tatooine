@@ -5,6 +5,3 @@ services:
   plan: free 
   buildCommand: pnpm i; pnpm build
   startCommand: pnpm start
-  envVars:
-  - key: NODE_ENV
-    value: production
