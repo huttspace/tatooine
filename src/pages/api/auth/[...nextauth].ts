@@ -3,6 +3,8 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "src/lib/prisma";
 
+const DEFAULT_PROJECT_NAME = "Default Project";
+
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   pages: {
@@ -26,19 +28,41 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      return token;
+      const existingUser = await prisma.user.findUnique({
+        where: { email: token.email ?? "" },
+      });
+
+      if (!existingUser) return token;
+
+      return {
+        id: existingUser.id,
+        email: existingUser.email,
+      };
     },
-    //セッションがチェックされた時に呼ばれる
     async session({ session, token }) {
       return {
         ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          name: token.name,
-          username: token.username,
-        },
+        user: { id: token.id, email: token.email },
       };
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      console.log("--------------call createuser -------------");
+      console.log({ user });
+      console.log("--------------call createuser -------------");
+      if (!user) return;
+      const project = await prisma.project.create({
+        data: { name: DEFAULT_PROJECT_NAME },
+      });
+
+      await prisma.membership.create({
+        data: {
+          role: "ADMIN",
+          projectId: project.id,
+          userId: user.id,
+        },
+      });
     },
   },
   secret: process.env.NEXT_PUBLIC_SECRET,

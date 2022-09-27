@@ -2,11 +2,11 @@ import NextAuth, { DefaultUser } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
-  interface Session {
-    user: User | JWT;
-  }
+  type DefaultSessionUser = NonNullable<DefaultSession["user"]>;
+  // TODO change name 'MyUser'
+  type MyUser = DefaultSessionUser & { id: string; email: string };
 
-  interface User extends DefaultUser {
-    id?: string | null;
+  interface Session {
+    user: MyUser;
   }
 }
