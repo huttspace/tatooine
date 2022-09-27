@@ -1,6 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppPropsWithLayout } from "next/app";
 import { theme } from "src/lib/theme";
+import { trpc } from "src/utils/trpc";
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -12,4 +13,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);

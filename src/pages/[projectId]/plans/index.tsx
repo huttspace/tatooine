@@ -4,11 +4,13 @@ import type { NextPageWithLayout } from "next";
 import { PageHeader } from "src/components/";
 import { CreatePlan } from "src/features/plans";
 import { AppLayout } from "src/layouts";
+import { trpc } from "src/utils/trpc";
 
 const HEADER_HEIGHT = 64;
 
 const PlansPage: NextPageWithLayout = () => {
   const { onOpen, isOpen, onClose } = useDisclosure();
+  const data = trpc.hello.useQuery();
 
   return (
     <Box h='full'>

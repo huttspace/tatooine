@@ -1,12 +1,6 @@
 import * as trpcNext from "@trpc/server/adapters/next";
 import { createContext } from "src/lib/trpc/server/createContext";
-import { t } from "src/lib/trpc/server/createRouter";
-
-const hello = t.procedure.query(() => "hello world");
-
-export const appRouter = t.router({
-  hello,
-});
+import { appRouter } from "src/lib/trpc/server/routers/_app";
 
 export default trpcNext.createNextApiHandler({
   router: appRouter,
