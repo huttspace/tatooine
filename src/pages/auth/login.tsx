@@ -31,6 +31,7 @@ const Login = () => {
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
+  console.log(session);
 
   if (session) {
     return { redirect: { permanent: false, destination: "/" } };
