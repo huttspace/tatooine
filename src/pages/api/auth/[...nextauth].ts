@@ -48,9 +48,6 @@ export default NextAuth({
   },
   events: {
     async createUser({ user }) {
-      console.log("--------------call createuser -------------");
-      console.log({ user });
-      console.log("--------------call createuser -------------");
       if (!user) return;
       const project = await prisma.project.create({
         data: { name: DEFAULT_PROJECT_NAME },
@@ -65,5 +62,5 @@ export default NextAuth({
       });
     },
   },
-  secret: process.env.NEXT_PUBLIC_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
 });
