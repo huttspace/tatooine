@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "tatooine-9dc13"
+  },
+  "hosting": {
+    "source": ".",
+    "cleanUrls": true
+  }
+}
