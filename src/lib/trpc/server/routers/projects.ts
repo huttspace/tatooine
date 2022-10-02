@@ -11,4 +11,7 @@ export const projectsRouter = t.router({
 
       return project;
     }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.project.findMany({});
+  }),
 });
