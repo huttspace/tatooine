@@ -37,6 +37,7 @@ specifiers:
   lint-staged: ^13.0.3
   next: 12.3.1
   next-auth: ^4.12.0
+  pathpida: ^0.18.1
   prettier: ^2.7.1
   prisma: ^4.3.1
   react: 18.2.0
@@ -91,6 +92,7 @@ devDependencies:
   eslint-config-next: 12.3.1_7ilbxdl5iguzcjriqqcg2m5cku
   eslint-config-prettier: 8.5.0_eslint@8.24.0
   lint-staged: 13.0.3
+  pathpida: 0.18.1
   prettier: 2.7.1
   prisma: 4.3.1
   simple-git-hooks: 2.8.0
@@ -10809,6 +10811,15 @@ packages:
   /path-type/4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
+
+  /pathpida/0.18.1:
+    resolution: {integrity: sha512-rDWOi9lcbc2tV+2LSfQW7p5i6Tu0GSfsSXjYMP4qcXnnmuTYgOp7zE4ei2+P+wg9ntpwKAwHLpWZNNseJbKrSQ==}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      ignore: 5.2.0
+      minimist: 1.2.6
+    dev: true
 
   /pbkdf2/3.1.2:
     resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
