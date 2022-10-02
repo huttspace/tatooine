@@ -1,6 +1,7 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, useDisclosure, Flex, Heading } from "@chakra-ui/react";
 import type { NextPageWithLayout } from "next";
+import { useSession } from "next-auth/react";
 import { PageHeader } from "src/components/";
 import { CreatePlan } from "src/features/plans";
 import { useParams } from "src/hooks/useParams";
@@ -10,6 +11,8 @@ import { trpc } from "src/utils/trpc";
 const HEADER_HEIGHT = 64;
 
 const PlansPage: NextPageWithLayout = () => {
+  const session = useSession();
+  console.log(session);
   const projectId = useParams("projectId");
   console.log(projectId);
   const { onOpen, isOpen, onClose } = useDisclosure();

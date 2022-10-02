@@ -35,14 +35,15 @@ export default NextAuth({
       if (!existingUser) return token;
 
       return {
+        ...token,
         id: existingUser.id,
         email: existingUser.email,
       };
     },
     async session({ session, token }) {
       return {
-        ...session,
-        user: { id: token.id, email: token.email },
+        expires: session.expires,
+        user: { ...session.user, id: token.id as string },
       };
     },
   },
