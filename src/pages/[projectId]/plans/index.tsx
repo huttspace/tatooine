@@ -3,14 +3,19 @@ import { Box, Button, useDisclosure, Flex, Heading } from "@chakra-ui/react";
 import type { NextPageWithLayout } from "next";
 import { PageHeader } from "src/components/";
 import { CreatePlan } from "src/features/plans";
+import { useParams } from "src/hooks/useParams";
 import { AppLayout } from "src/layouts";
 import { trpc } from "src/utils/trpc";
 
 const HEADER_HEIGHT = 64;
 
 const PlansPage: NextPageWithLayout = () => {
+  const projectId = useParams("projectId");
+  console.log(projectId);
   const { onOpen, isOpen, onClose } = useDisclosure();
-  const data = trpc.plans.list.useQuery();
+  const data = trpc.plans.list.useQuery({
+    projectId: "cl8qybig20025dwai8hr5a9nw",
+  });
 
   return (
     <Box h='full'>

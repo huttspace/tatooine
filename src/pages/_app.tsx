@@ -20,4 +20,7 @@ function MyApp({
   );
 }
 
+// https://zenn.dev/sora_kumo/articles/e86bbf0291d4a7
+MyApp.getInitialProps = async () => ({ pageProps: {} });
+
 export default trpc.withTRPC(MyApp);
