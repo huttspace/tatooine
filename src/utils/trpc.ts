@@ -7,7 +7,17 @@ export const trpc = createTRPCNext<AppRouter>({
   config() {
     return {
       transformer: superjson,
-      links: [httpBatchLink({ url: "http://localhost:3000/api/trpc" })],
+      links: [httpBatchLink({ url: "/api/trpc" })],
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            retry: false,
+            refetchOnWindowFocus: false,
+            staleTime: Infinity,
+            cacheTime: Infinity,
+          },
+        },
+      },
     };
   },
 });
