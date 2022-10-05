@@ -2,6 +2,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, useDisclosure, Flex, Heading } from "@chakra-ui/react";
 import type { NextPageWithLayout } from "next";
 import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { PageHeader } from "src/components/";
 import { CreatePlan } from "src/features/plans";
 import { useParams } from "src/hooks/useParams";
@@ -36,6 +37,7 @@ const PlansPage: NextPageWithLayout = () => {
         justifyContent='center'
         alignItems='center'
       >
+        <Button onClick={async () => await signOut()}>sign out</Button>
         <PlanEmptyState handleClick={onOpen} />
       </Flex>
       <CreatePlan isOpen={isOpen} onClose={onClose} />

@@ -51,7 +51,18 @@ export default NextAuth({
     async createUser({ user }) {
       if (!user) return;
       const project = await prisma.project.create({
-        data: { name: DEFAULT_PROJECT_NAME },
+        data: {
+          name: DEFAULT_PROJECT_NAME,
+          environments: {
+            createMany: {
+              skipDuplicates: true,
+              data: [
+                { name: "Production", deletable: false },
+                { name: "Staging", deletable: true },
+              ],
+            },
+          },
+        },
       });
 
       await prisma.membership.create({

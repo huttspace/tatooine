@@ -64,8 +64,8 @@ enum MembershipRole {
 
 model Membership {
   id        String         @id @default(cuid())
-  project   Project        @relation(fields: [projectId], references: [id])
-  user      User           @relation(fields: [userId], references: [id])
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   projectId String
   userId    String
   role      MembershipRole
@@ -75,10 +75,11 @@ model Membership {
 }
 
 model Project {
-  id      String       @id @default(cuid())
-  name    String
-  members Membership[]
-  plans   Plan[]
+  id           String        @id @default(cuid())
+  name         String
+  members      Membership[]
+  plans        Plan[]
+  environments Environment[]
 
   @@map("projects")
 }
@@ -90,4 +91,14 @@ model Plan {
   projectId String
 
   @@map("plans")
+}
+
+model Environment {
+  id        String  @id @default(cuid())
+  name      String
+  deletable Boolean @default(true)
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  @@map("environments")
 }
