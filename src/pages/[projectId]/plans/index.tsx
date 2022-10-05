@@ -12,14 +12,10 @@ import { trpc } from "src/utils/trpc";
 const HEADER_HEIGHT = 64;
 
 const PlansPage: NextPageWithLayout = () => {
-  const session = useSession();
-  console.log(session);
   const projectId = useParams("projectId");
-  console.log(projectId);
   const { onOpen, isOpen, onClose } = useDisclosure();
-  const data = trpc.plans.list.useQuery({
-    projectId: "cl8qybig20025dwai8hr5a9nw",
-  });
+
+  const data = trpc.plans.list.useQuery({ projectId });
 
   return (
     <Box h='full'>
@@ -40,7 +36,7 @@ const PlansPage: NextPageWithLayout = () => {
         <Button onClick={async () => await signOut()}>sign out</Button>
         <PlanEmptyState handleClick={onOpen} />
       </Flex>
-      <CreatePlan isOpen={isOpen} onClose={onClose} />
+      <CreatePlan isOpen={isOpen} onClose={onClose} projectId={projectId} />
     </Box>
   );
 };

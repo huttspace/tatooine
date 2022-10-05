@@ -91,7 +91,6 @@ model Environment {
   production       Boolean           @default(false)
   project          Project           @relation(fields: [projectId], references: [id])
   projectId        String
-  plans            Plan[]
   environmentPlans EnvironmentPlan[]
 
   @@unique([projectId, envKey])
@@ -104,7 +103,6 @@ model Plan {
   key              String
   project          Project           @relation(fields: [projectId], references: [id])
   projectId        String
-  environments     Environment[]
   environmentPlans EnvironmentPlan[]
 
   @@unique([projectId, key])
