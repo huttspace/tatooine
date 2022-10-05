@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { nanoid } from "nanoid";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "src/lib/prisma";
@@ -50,6 +51,7 @@ export default NextAuth({
   events: {
     async createUser({ user }) {
       if (!user) return;
+
       const project = await prisma.project.create({
         data: {
           name: DEFAULT_PROJECT_NAME,
@@ -57,8 +59,16 @@ export default NextAuth({
             createMany: {
               skipDuplicates: true,
               data: [
-                { name: "Production", deletable: false },
-                { name: "Staging", deletable: true },
+                {
+                  name: "Production",
+                  production: true,
+                  envKey: `env_${nanoid(10)}`,
+                },
+                {
+                  name: "Staging",
+                  production: false,
+                  envKey: `env_${nanoid(10)}`,
+                },
               ],
             },
           },

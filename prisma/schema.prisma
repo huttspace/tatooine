@@ -84,21 +84,38 @@ model Project {
   @@map("projects")
 }
 
-model Plan {
-  id        String  @id @default(cuid())
-  name      String
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId String
+model Environment {
+  id               String            @id @default(cuid())
+  name             String
+  envKey           String
+  production       Boolean           @default(false)
+  project          Project           @relation(fields: [projectId], references: [id])
+  projectId        String
+  plans            Plan[]
+  environmentPlans EnvironmentPlan[]
 
+  @@unique([projectId, envKey])
+  @@map("environments")
+}
+
+model Plan {
+  id               String            @id @default(cuid())
+  name             String
+  key              String
+  project          Project           @relation(fields: [projectId], references: [id])
+  projectId        String
+  environments     Environment[]
+  environmentPlans EnvironmentPlan[]
+
+  @@unique([projectId, key])
   @@map("plans")
 }
 
-model Environment {
-  id        String  @id @default(cuid())
-  name      String
-  deletable Boolean @default(true)
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId String
+model EnvironmentPlan {
+  plan          Plan        @relation(fields: [planId], references: [id])
+  planId        String
+  environment   Environment @relation(fields: [environmentId], references: [id])
+  environmentId String
 
-  @@map("environments")
+  @@unique([planId, environmentId])
 }

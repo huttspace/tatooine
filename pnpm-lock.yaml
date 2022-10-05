@@ -36,6 +36,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   framer-motion: ^6
   lint-staged: ^13.0.3
+  nanoid: ^4.0.0
   next: 12.3.1
   next-auth: ^4.12.0
   pathpida: ^0.18.1
@@ -64,6 +65,7 @@ dependencies:
   '@trpc/react': 10.0.0-proxy-beta.7_khb726g7khcpqm6ha6qindhz2q
   '@trpc/server': 10.0.0-proxy-beta.7
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
+  nanoid: 4.0.0
   next: 12.3.1_ir3quccc6i62x6qn6jjhyjjiey
   next-auth: 4.12.0_azq6kxkn3od7qdylwkyksrwopy
   react: 18.2.0
@@ -10137,6 +10139,12 @@ packages:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  /nanoid/4.0.0:
+    resolution: {integrity: sha512-IgBP8piMxe/gf73RTQx7hmnhwz0aaEXYakvqZyE302IXW3HyVNhdNGC+O2MwMAVhLEnvXlvKtGbtJf6wvHihCg==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /nanomatch/1.2.13:
     resolution: {integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==}
