@@ -14,7 +14,7 @@ import { createPlanInput, CreatePlanInput } from "src/lib/schema";
 import { DrawerProps } from "src/typings";
 import { trpc } from "src/utils/trpc";
 
-type Props = { projectId: string } & DrawerProps;
+export type Props = { projectId: string } & DrawerProps;
 
 export const CreatePlan = ({ isOpen, onClose, projectId }: Props) => {
   const { mutateAsync, isLoading, isSuccess } = trpc.plans.create.useMutation();
