@@ -21,6 +21,7 @@ export async function getServerSideProps(context: NextPageContext) {
             where: {
               production: true,
             },
+            select: { envKey: true },
           },
         },
       },
@@ -35,8 +36,10 @@ export async function getServerSideProps(context: NextPageContext) {
   const productionEnvironment = project.environments[0];
 
   return {
-    redirect: { permanent: false, destination: `/${project.id}/plans` },
-    // redirect: { permanent: false, destination: `/${project.id}/${productionEnvironment.envKey}/plans` },
+    redirect: {
+      permanent: false,
+      destination: `/${project.id}/${productionEnvironment.envKey}/plans`,
+    },
   };
 }
 

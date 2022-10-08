@@ -13,9 +13,10 @@ const HEADER_HEIGHT = 64;
 
 const PlansPage: NextPageWithLayout = () => {
   const projectId = useParams("projectId");
+  const envKey = useParams("envKey");
   const { onOpen, isOpen, onClose } = useDisclosure();
 
-  const data = trpc.plans.list.useQuery({ projectId });
+  const data = trpc.plans.list.useQuery({ projectId, envKey });
 
   return (
     <Box h='full'>
