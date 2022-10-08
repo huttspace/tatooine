@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-type Params = { projectId: string; planId: string };
+type Params = { projectId: string; envKey: string; planId: string };
 type ParamsKeys = keyof Params;
 
 export const useParams = (key: ParamsKeys) => {

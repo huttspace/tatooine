@@ -9,11 +9,17 @@ export const plansRouter = t.router({
     .query(async ({ ctx, input }) => {
       const plans = await ctx.prisma.plan.findMany({
         where: { projectId: input.projectId },
+        include: {
+          environmentPlans: {
+            where: { environment: { envKey: input.envKey } },
+          },
+        },
       });
       if (!plans) throw new TRPCError({ code: "NOT_FOUND" });
 
       return plans;
     }),
+
   create: protectedProcedure
     .input(createPlanInput)
     .mutation(async ({ ctx, input: { name, key, projectId } }) => {

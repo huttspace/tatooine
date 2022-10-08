@@ -8,22 +8,38 @@ const RedirectPage = () => {
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
-  console.log(session?.user);
   if (!session?.user?.id) {
     return { redirect: { permanent: false, destination: "/auth/login" } };
   }
 
   const membership = await prisma.membership.findFirst({
     where: { userId: session.user.id },
-    include: { project: true },
+    include: {
+      project: {
+        include: {
+          environments: {
+            where: {
+              production: true,
+            },
+            select: { envKey: true },
+          },
+        },
+      },
+    },
   });
   // TODO if not found membership or project, move to create project page
-  // if (!membership.project) {}
+  if (!membership?.project) {
+    return { redirect: { permanent: false, destination: "/projects" } };
+  }
 
-  const project = membership?.project;
+  const project = membership.project;
+  const productionEnvironment = project.environments[0];
 
   return {
-    redirect: { permanent: false, destination: `/${project?.id ?? ""}/plans` },
+    redirect: {
+      permanent: false,
+      destination: `/${project.id}/${productionEnvironment.envKey}/plans`,
+    },
   };
 }
 

@@ -116,4 +116,5 @@ model EnvironmentPlan {
   environmentId String
 
   @@unique([planId, environmentId])
+  @@map("environmentPlans")
 }
