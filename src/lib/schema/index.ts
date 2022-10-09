@@ -13,3 +13,15 @@ export const createPlanInput = z.object({
   description: z.string(),
 });
 export type CreatePlanInput = z.infer<typeof createPlanInput>;
+
+export const createFeatureInput = z.object({
+  projectId: z.string().cuid(),
+  name: z.string().min(1),
+  key: z.string().min(1),
+  description: z.string(),
+  featureType: z.enum(["bool", "dailyLimit", "monthlyLimit"]),
+  bool: z.boolean().nullable(),
+  limitRate: z.number().nullable(),
+});
+
+export type CreateFeatureInput = z.infer<typeof createFeatureInput>;
