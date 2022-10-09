@@ -1,13 +1,21 @@
 import { AddIcon } from "@chakra-ui/icons";
-import { Box, Button, useDisclosure, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  useDisclosure,
+  Flex,
+  Heading,
+  Spinner,
+  Tag,
+  Text,
+} from "@chakra-ui/react";
 import type { NextPageWithLayout } from "next";
-import { useSession } from "next-auth/react";
-import { signOut } from "next-auth/react";
+import Link from "next/link";
 import { PageHeader } from "src/components/";
 import { CreatePlan } from "src/features/plans";
 import { useParams } from "src/hooks/useParams";
 import { AppLayout } from "src/layouts";
-import { trpc } from "src/utils/trpc";
+import { Plan, trpc } from "src/utils/trpc";
 
 const HEADER_HEIGHT = 64;
 
@@ -16,31 +24,60 @@ const PlansPage: NextPageWithLayout = () => {
   const envKey = useParams("envKey");
   const { onOpen, isOpen, onClose } = useDisclosure();
 
-  const data = trpc.plans.list.useQuery({ projectId, envKey });
+  const { isLoading, data: plans } = trpc.plans.list.useQuery({
+    projectId,
+    envKey,
+  });
+
+  if (isLoading) return <Spinner />;
+  if (!plans) return null;
 
   return (
-    <Box h='full'>
+    <Box h="full">
       <PageHeader
-        title='Plans'
-        description='This is plans page'
+        title="Plans"
+        description="This is plans page"
         rightAlignedComponent={
           <Box>
             <AddPlanButton handleClick={onOpen} />
           </Box>
         }
       />
-      <Flex
-        h={`calc(100% - ${HEADER_HEIGHT}px)`}
-        justifyContent='center'
-        alignItems='center'
-      >
-        <Button onClick={async () => await signOut()}>sign out</Button>
+      {plans.length ? (
+        <PlanList plans={plans} />
+      ) : (
         <PlanEmptyState handleClick={onOpen} />
-      </Flex>
+      )}
       <CreatePlan isOpen={isOpen} onClose={onClose} projectId={projectId} />
     </Box>
   );
 };
+
+const PlanList = ({ plans }: { plans: Plan[] }) => (
+  <Box border="1px" borderColor="gray.200" rounded="6px" mt={8}>
+    {plans.map((plan) => (
+      <PlanListItem plan={plan} key={plan.id} />
+    ))}
+  </Box>
+);
+
+const PlanListItem = ({ plan }: { plan: Plan }) => (
+  <Box borderBottom="1px" borderColor="gray.200" p={4} cursor="pointer">
+    <Link href="/" passHref>
+      <Box>
+        <Box>
+          <Heading fontSize="md">{plan.name}</Heading>
+          <Text fontSize="sm" color="gray.600">
+            {plan.description}
+          </Text>
+        </Box>
+        <Tag size="sm" mt={2}>
+          {plan.key}
+        </Tag>
+      </Box>
+    </Link>
+  </Box>
+);
 
 const AddPlanButton = ({ handleClick }: { handleClick: () => void }) => (
   <Button onClick={handleClick} leftIcon={<AddIcon />}>
@@ -49,10 +86,16 @@ const AddPlanButton = ({ handleClick }: { handleClick: () => void }) => (
 );
 
 const PlanEmptyState = ({ handleClick }: { handleClick: () => void }) => (
-  <Box textAlign='center'>
-    <Heading fontSize='lg'>Create first plan</Heading>
-    <AddPlanButton handleClick={handleClick} />
-  </Box>
+  <Flex
+    h={`calc(100% - ${HEADER_HEIGHT}px)`}
+    justifyContent="center"
+    alignItems="center"
+  >
+    <Box textAlign="center">
+      <Heading fontSize="lg">Create first plan</Heading>
+      <AddPlanButton handleClick={handleClick} />
+    </Box>
+  </Flex>
 );
 
 PlansPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;

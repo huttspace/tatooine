@@ -7,13 +7,22 @@ export type Props = {
   rightAlignedComponent?: ReactNode;
 };
 
-export const PageHeader = ({ title, description, rightAlignedComponent }: Props) => (
-  <Box w='full' h='64px' display='flex' justifyContent='space-between' alignItems='center'>
+export const PageHeader = ({
+  title,
+  description,
+  rightAlignedComponent,
+}: Props) => (
+  <Box
+    w="full"
+    display="flex"
+    justifyContent="space-between"
+    alignItems="flex-start"
+  >
     <Box>
-      <VStack spacing={1} align='stretch'>
-        <Heading fontSize='xl'>{title}</Heading>
+      <VStack spacing={1} align="stretch">
+        <Heading fontSize="xl">{title}</Heading>
         {description && (
-          <Text fontSize='sm' color='gray.500'>
+          <Text fontSize="sm" color="gray.500">
             {description}
           </Text>
         )}

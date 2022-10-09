@@ -9,6 +9,7 @@ export const plansRouter = t.router({
     .query(async ({ ctx, input }) => {
       const plans = await ctx.prisma.plan.findMany({
         where: { projectId: input.projectId },
+        orderBy: { createdAt: "desc" },
         include: {
           environmentPlans: {
             where: { environment: { envKey: input.envKey } },
@@ -22,7 +23,7 @@ export const plansRouter = t.router({
 
   create: protectedProcedure
     .input(createPlanInput)
-    .mutation(async ({ ctx, input: { name, key, projectId } }) => {
+    .mutation(async ({ ctx, input: { name, key, description, projectId } }) => {
       const environments = await ctx.prisma.environment.findMany({
         where: { projectId },
       });
@@ -32,6 +33,7 @@ export const plansRouter = t.router({
         data: {
           name,
           key,
+          description,
           projectId,
           environmentPlans: {
             createMany: {

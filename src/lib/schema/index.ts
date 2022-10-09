@@ -10,5 +10,6 @@ export const createPlanInput = z.object({
   projectId: z.string().cuid(),
   name: z.string().min(1),
   key: z.string().min(1),
+  description: z.string(),
 });
 export type CreatePlanInput = z.infer<typeof createPlanInput>;
