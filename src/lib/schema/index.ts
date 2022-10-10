@@ -23,6 +23,7 @@ export const createFeatureInput = z.object({
   values: z.array(
     z.object({
       planId: z.string().cuid(),
+      name: z.string(),
       value: z.boolean().or(z.number()),
     }),
   ),

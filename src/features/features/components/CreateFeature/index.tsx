@@ -8,10 +8,20 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  Switch,
+  Flex,
+  Text,
+  Divider,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  useFieldArray,
+  FieldArrayWithId,
+  UseFormReturn,
+} from "react-hook-form";
 import { Drawer } from "src/components/Drawer";
 import { CreateFeatureInput, createPlanInput } from "src/lib/schema";
 import { DrawerProps } from "src/typings";
@@ -50,6 +60,22 @@ export const CreateFeature = ({
     },
   });
 
+  console.log(form.watch());
+
+  const { fields } = useFieldArray({ control: form.control, name: "values" });
+
+  useEffect(() => {
+    if (plans)
+      form.setValue(
+        "values",
+        plans.map((plan) => ({
+          planId: plan.id,
+          name: plan.name,
+          value: false,
+        })),
+      );
+  }, [plans, form]);
+
   const { mutateAsync, isLoading, isSuccess } =
     trpc.features.create.useMutation({
       onSuccess() {
@@ -73,7 +99,6 @@ export const CreateFeature = ({
     const values = form.getValues();
     await mutateAsync({
       ...values,
-      values: [{ value: 0, planId: "cl90wg13f0069duaiqdtlpe6a" }],
     });
   };
 
@@ -94,7 +119,7 @@ export const CreateFeature = ({
       title="Create new feature"
       cta={form.handleSubmit(handleSubmit)}
     >
-      <VStack>
+      <VStack spacing={4}>
         <FormControl isInvalid={!!form.formState.errors["name"]}>
           <FormLabel>Name</FormLabel>
           <Input {...form.register("name")} autoFocus={true} />
@@ -139,7 +164,47 @@ export const CreateFeature = ({
             </Stack>
           </RadioGroup>
         </FormControl>
+
+        <FormControl>
+          <FormLabel>Plan Setting</FormLabel>
+          <VStack align="stretch" divider={<Divider />}>
+            {fields.map((field, index) =>
+              form.watch("featureType") === "bool" ? (
+                <BooleanInput
+                  key={field.id}
+                  field={field}
+                  form={form}
+                  index={index}
+                />
+              ) : (
+                <>Limit</>
+              ),
+            )}
+          </VStack>
+        </FormControl>
       </VStack>
     </Drawer>
+  );
+};
+
+const BooleanInput = ({
+  field,
+  form,
+  index,
+}: {
+  field: FieldArrayWithId<CreateFeatureInput>;
+  form: UseFormReturn<CreateFeatureInput>;
+  index: number;
+}) => {
+  return (
+    <Flex justify="space-between">
+      {field.name}
+      <Text></Text>
+      <Switch
+        onChange={(e) =>
+          form.setValue(`values.${index}.value`, e.target.checked)
+        }
+      />
+    </Flex>
   );
 };
