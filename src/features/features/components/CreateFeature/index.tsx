@@ -12,6 +12,11 @@ import {
   Flex,
   Text,
   Divider,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
@@ -177,7 +182,12 @@ export const CreateFeature = ({
                   index={index}
                 />
               ) : (
-                <>Limit</>
+                <LimitInput
+                  key={field.id}
+                  field={field}
+                  form={form}
+                  index={index}
+                />
               ),
             )}
           </VStack>
@@ -187,24 +197,39 @@ export const CreateFeature = ({
   );
 };
 
-const BooleanInput = ({
-  field,
-  form,
-  index,
-}: {
+type InputProps = {
   field: FieldArrayWithId<CreateFeatureInput>;
   form: UseFormReturn<CreateFeatureInput>;
   index: number;
-}) => {
+};
+
+const BooleanInput = ({ field, form, index }: InputProps) => {
   return (
     <Flex justify="space-between">
-      {field.name}
-      <Text></Text>
+      <Text>{field.name}</Text>
       <Switch
         onChange={(e) =>
           form.setValue(`values.${index}.value`, e.target.checked)
         }
       />
+    </Flex>
+  );
+};
+
+const LimitInput = ({ field, form, index }: InputProps) => {
+  return (
+    <Flex justify="space-between">
+      <Text>{field.name}</Text>
+      <NumberInput
+        defaultValue={0}
+        onChange={(_, value) => form.setValue(`values.${index}.value`, value)}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
     </Flex>
   );
 };
