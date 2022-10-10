@@ -10,6 +10,7 @@ const HEADER_HEIGHT = 64;
 
 const FeaturesPage: NextPageWithLayout = () => {
   const projectId = useParams("projectId");
+  const envKey = useParams("envKey");
 
   const { onOpen, isOpen, onClose } = useDisclosure();
 
@@ -24,7 +25,12 @@ const FeaturesPage: NextPageWithLayout = () => {
           </Box>
         }
       />
-      <CreateFeature onClose={onClose} isOpen={isOpen} projectId={projectId} />
+      <CreateFeature
+        onClose={onClose}
+        isOpen={isOpen}
+        projectId={projectId}
+        envKey={envKey}
+      />
     </Box>
   );
 };

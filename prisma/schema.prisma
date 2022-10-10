@@ -90,15 +90,16 @@ model Project {
 }
 
 model Environment {
-  id               String            @id @default(cuid())
-  name             String
-  envKey           String
-  production       Boolean           @default(false)
-  project          Project           @relation(fields: [projectId], references: [id])
-  projectId        String
-  environmentPlans EnvironmentPlan[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                  String               @id @default(cuid())
+  name                String
+  envKey              String
+  production          Boolean              @default(false)
+  project             Project              @relation(fields: [projectId], references: [id])
+  projectId           String
+  environmentPlans    EnvironmentPlan[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  environmentFeatures EnvironmentFeature[]
 
   @@unique([projectId, envKey])
   @@map("environments")
@@ -120,10 +121,11 @@ model Plan {
 }
 
 model EnvironmentPlan {
-  plan          Plan        @relation(fields: [planId], references: [id])
-  planId        String
-  environment   Environment @relation(fields: [environmentId], references: [id])
-  environmentId String
+  plan                Plan                 @relation(fields: [planId], references: [id])
+  planId              String
+  environment         Environment          @relation(fields: [environmentId], references: [id])
+  environmentId       String
+  environmentFeatures EnvironmentFeature[]
 
   @@unique([planId, environmentId])
   @@map("environmentPlans")
@@ -136,18 +138,30 @@ enum FeatureType {
 }
 
 model Feature {
-  id          String      @id @default(cuid())
-  name        String
-  key         String
-  featureType FeatureType
-  bool        Boolean?
-  limitRate   Int?
-  description String
-  project     Project     @relation(fields: [projectId], references: [id])
-  projectId   String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id                  String               @id @default(cuid())
+  name                String
+  key                 String
+  featureType         FeatureType
+  description         String
+  project             Project              @relation(fields: [projectId], references: [id])
+  projectId           String
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  environmentFeatures EnvironmentFeature[]
 
   @@unique([projectId, key])
   @@map("features")
+}
+
+model EnvironmentFeature {
+  environmet      Environment     @relation(fields: [environmentId], references: [id])
+  environmentId   String
+  feature         Feature         @relation(fields: [featureId], references: [id])
+  featureId       String
+  environmentPlan EnvironmentPlan @relation(fields: [planId, environmentId], references: [planId, environmentId])
+  planId          String
+  bool            Boolean?
+  limit           Int?
+
+  @@unique([featureId, environmentId, planId])
 }

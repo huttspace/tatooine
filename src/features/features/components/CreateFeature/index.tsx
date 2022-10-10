@@ -22,8 +22,7 @@ const defaultValues: Omit<CreateFeatureInput, "projectId"> = {
   key: "",
   description: "",
   featureType: "bool",
-  bool: null,
-  limitRate: null,
+  values: [],
 };
 
 type FeatureTypes = Pick<CreateFeatureInput, "featureType">;
@@ -38,7 +37,10 @@ export const CreateFeature = ({
   onClose,
   isOpen,
   projectId,
-}: DrawerProps & { projectId: string }) => {
+  envKey,
+}: DrawerProps & { projectId: string; envKey: string }) => {
+  const { data: plans } = trpc.plans.list.useQuery({ projectId, envKey });
+
   const form = useForm<CreateFeatureInput>({
     resolver: zodResolver(createPlanInput),
     mode: "all",
@@ -48,20 +50,21 @@ export const CreateFeature = ({
     },
   });
 
-  const { mutateAsync, isLoading } = trpc.features.create.useMutation({
-    onSuccess() {
-      onClose();
-      form.reset({ ...defaultValues, projectId });
-    },
-    onError({ data }) {
-      if (data?.code === "CONFLICT") {
-        const key = form.getValues("key");
-        form.setError("key", {
-          message: `Key name ${key} already use another feature`,
-        });
-      }
-    },
-  });
+  const { mutateAsync, isLoading, isSuccess } =
+    trpc.features.create.useMutation({
+      onSuccess() {
+        onClose();
+        form.reset({ ...defaultValues, projectId });
+      },
+      onError({ data }) {
+        if (data?.code === "CONFLICT") {
+          const key = form.getValues("key");
+          form.setError("key", {
+            message: `Key name ${key} already use another feature`,
+          });
+        }
+      },
+    });
 
   const handleSubmit: SubmitHandler<
     CreateFeatureInput
@@ -70,8 +73,7 @@ export const CreateFeature = ({
     const values = form.getValues();
     await mutateAsync({
       ...values,
-      bool: false,
-      limitRate: null,
+      values: [{ value: 0, planId: "cl90wg13f0069duaiqdtlpe6a" }],
     });
   };
 
@@ -81,11 +83,12 @@ export const CreateFeature = ({
       value: FEATURE_TYPES[key as FeatureTypes["featureType"]],
     }));
   }, []);
-  console.log(form.formState.errors);
+
+  if (!plans) return null;
 
   return (
     <Drawer
-      isDone={false}
+      isDone={isSuccess}
       isOpen={isOpen}
       onClose={onClose}
       title="Create new feature"
