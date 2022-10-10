@@ -12,6 +12,15 @@ export const theme = extendTheme(
           },
         },
       },
+      NumberInput: {
+        sizes: {
+          sm: {
+            field: {
+              borderRadius: "6px",
+            },
+          },
+        },
+      },
     },
   },
   withDefaultSize({
