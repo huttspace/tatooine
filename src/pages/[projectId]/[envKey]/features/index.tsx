@@ -5,12 +5,20 @@ import { PageHeader } from "src/components/";
 import { CreateFeature } from "src/features/features";
 import { useParams } from "src/hooks/useParams";
 import { AppLayout } from "src/layouts";
+import { trpc } from "src/utils/trpc";
 
 const HEADER_HEIGHT = 64;
 
 const FeaturesPage: NextPageWithLayout = () => {
   const projectId = useParams("projectId");
   const envKey = useParams("envKey");
+
+  const { data, isLoading } = trpc.features.list.useQuery({
+    projectId,
+    envKey,
+  });
+
+  console.log({ data });
 
   const { onOpen, isOpen, onClose } = useDisclosure();
 

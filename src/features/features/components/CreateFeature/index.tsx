@@ -65,8 +65,6 @@ export const CreateFeature = ({
     },
   });
 
-  console.log(form.watch());
-
   const { fields } = useFieldArray({ control: form.control, name: "values" });
 
   useEffect(() => {
@@ -124,7 +122,7 @@ export const CreateFeature = ({
       title="Create new feature"
       cta={form.handleSubmit(handleSubmit)}
     >
-      <VStack spacing={4}>
+      <VStack spacing={6}>
         <FormControl isInvalid={!!form.formState.errors["name"]}>
           <FormLabel>Name</FormLabel>
           <Input {...form.register("name")} autoFocus={true} />

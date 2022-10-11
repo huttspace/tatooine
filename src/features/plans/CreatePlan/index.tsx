@@ -46,7 +46,7 @@ export const CreatePlan = ({ isOpen, onClose, projectId }: Props) => {
       cta={form.handleSubmit(handleSubmit)}
     >
       <Box>
-        <VStack>
+        <VStack spacing={6}>
           <FormControl isInvalid={!!form.formState.errors["name"]}>
             <FormLabel>Name</FormLabel>
             <Input {...form.register("name")} autoFocus={true} />
