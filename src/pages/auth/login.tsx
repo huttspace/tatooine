@@ -5,20 +5,20 @@ import { signIn, getSession } from "next-auth/react";
 const Login = () => {
   return (
     <Box
-      height='100vh'
-      w='full'
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      bg='gray.50'
+      height="100vh"
+      w="full"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      bg="gray.50"
     >
       <Box>
         <Box mb={8}>
-          <Heading textAlign='center'>Welcome back</Heading>
+          <Heading textAlign="center">Welcome back</Heading>
         </Box>
-        <Box bg='white' py={12} px={24} rounded='6px'>
+        <Box bg="white" py={12} px={24} rounded="6px">
           <Button
-            variant='outline'
+            variant="outline"
             onClick={async () => await signIn("google")}
           >
             Login in with Google
@@ -31,7 +31,6 @@ const Login = () => {
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
-  console.log(session);
 
   if (session) {
     return { redirect: { permanent: false, destination: "/" } };

@@ -28,6 +28,11 @@ export const plansRouter = t.router({
       });
       if (!environments) throw new TRPCError({ code: "NOT_FOUND" });
 
+      const existing = await ctx.prisma.plan.findFirst({
+        where: { projectId, key },
+      });
+      if (existing) throw new TRPCError({ code: "CONFLICT" });
+
       const plan = await ctx.prisma.plan.create({
         data: {
           name,

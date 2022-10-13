@@ -24,6 +24,14 @@ export const CreatePlan = ({ isOpen, onClose, projectId }: Props) => {
     onSuccess() {
       util.plans.list.invalidate();
     },
+    onError({ data }) {
+      if (data?.code === "CONFLICT") {
+        const key = form.getValues("key");
+        form.setError("key", {
+          message: `Key name ${key} already use another plan`,
+        });
+      }
+    },
   });
 
   const form = useForm<CreatePlanInput>({

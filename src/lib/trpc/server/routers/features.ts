@@ -15,13 +15,12 @@ export const featureRouter = t.router({
         input.featureType !== "bool" &&
         input.values.every((v) => typeof v.value === "number");
 
-      console.log(!isValidBoolRequest && !isValidLimitRequest);
       if (!isValidBoolRequest && !isValidBoolRequest) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "nope" });
       }
 
       const feature = await ctx.prisma.feature.findFirst({
-        where: { key: input.key },
+        where: { key: input.key, projectId: input.projectId },
       });
       if (feature) throw new TRPCError({ code: "CONFLICT" });
 
