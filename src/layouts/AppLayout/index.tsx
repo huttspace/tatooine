@@ -8,7 +8,7 @@ type LayoutProps = Required<{
 
 export const AppLayout = ({ children }: LayoutProps) => (
   <Flex>
-    <Box w="256px" borderRight="1px" h="100vh">
+    <Box>
       <Navigation />
     </Box>
     <Box w="full" h="100vh" px={12} pt={8}>

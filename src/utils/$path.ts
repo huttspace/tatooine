@@ -1,12 +1,21 @@
 export const pagesPath = {
   _projectId: (projectId: string | number) => ({
-    plans: {
-      $url: (url?: { hash?: string }) => ({
-        pathname: "/[projectId]/plans" as const,
-        query: { projectId },
-        hash: url?.hash,
-      }),
-    },
+    _envKey: (envKey: string | number) => ({
+      features: {
+        $url: (url?: { hash?: string }) => ({
+          pathname: "/[projectId]/[envKey]/features" as const,
+          query: { projectId, envKey },
+          hash: url?.hash,
+        }),
+      },
+      plans: {
+        $url: (url?: { hash?: string }) => ({
+          pathname: "/[projectId]/[envKey]/plans" as const,
+          query: { projectId, envKey },
+          hash: url?.hash,
+        }),
+      },
+    }),
   }),
   auth: {
     login: {
