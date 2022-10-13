@@ -54,6 +54,7 @@ export const CreateFeature = ({
   projectId,
   envKey,
 }: DrawerProps & { projectId: string; envKey: string }) => {
+  const utils = trpc.useContext();
   const { data: plans } = trpc.plans.list.useQuery({ projectId, envKey });
 
   const form = useForm<CreateFeatureInput>({
@@ -82,7 +83,7 @@ export const CreateFeature = ({
   const { mutateAsync, isLoading, isSuccess } =
     trpc.features.create.useMutation({
       onSuccess() {
-        onClose();
+        utils.features.list.invalidate();
         form.reset({ ...defaultValues, projectId });
       },
       onError({ data }) {

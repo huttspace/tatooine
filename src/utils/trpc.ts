@@ -24,4 +24,5 @@ export const trpc = createTRPCNext<AppRouter>({
 });
 
 export type Plan = inferProcedureOutput<AppRouter["plans"]["list"]>[0];
-export type Plans = Plan[];
+
+export type Feature = inferProcedureOutput<AppRouter["features"]["list"]>[0];
