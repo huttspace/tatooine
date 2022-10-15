@@ -27,7 +27,9 @@ const PlanPage: NextPageWithLayout = () => {
       <PageHeader title={plan.name} description={plan.description} />
       <Box>
         {plan.features.map((feature) => (
-          <Box key={feature.id}>{feature.name}</Box>
+          <Box key={feature.id}>
+            {feature.name}, {JSON.stringify(feature.value)}
+          </Box>
         ))}
       </Box>
     </Box>
