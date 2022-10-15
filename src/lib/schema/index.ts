@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Plans
 export const listPlansInput = z.object({
   projectId: z.string().cuid(),
   envKey: z.string(),
@@ -14,6 +15,13 @@ export const createPlanInput = z.object({
 });
 export type CreatePlanInput = z.infer<typeof createPlanInput>;
 
+export const singlePlansInput = z.object({
+  projectId: z.string().cuid(),
+  envKey: z.string(),
+  planId: z.string().cuid(),
+});
+
+// Features
 export const listFeatureInput = z.object({
   projectId: z.string().cuid(),
   envKey: z.string(),
