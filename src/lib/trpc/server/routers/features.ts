@@ -7,17 +7,18 @@ export const featureRouter = t.router({
   create: protectedProcedure
     .input(createFeatureInput)
     .mutation(async ({ ctx, input }) => {
-      const isValidBoolRequest =
-        input.featureType === "bool" &&
-        input.values.every((v) => typeof v.value === "boolean");
+      // const isValidBoolRequest =
+      //   input.featureType === "bool" &&
+      //   input.values.every((v) => typeof v.value === "boolean");
 
-      const isValidLimitRequest =
-        input.featureType !== "bool" &&
-        input.values.every((v) => typeof v.value === "number");
+      // const isValidLimitRequest =
+      //   input.featureType !== "bool" &&
+      //   input.values.every((v) => typeof v.value === "number");
 
-      if (!isValidBoolRequest && !isValidBoolRequest) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "nope" });
-      }
+      // console.log(!isValidBoolRequest && !isValidLimitRequest);
+      // if (!isValidBoolRequest && !isValidBoolRequest) {
+      //   throw new TRPCError({ code: "BAD_REQUEST" });
+      // }
 
       const feature = await ctx.prisma.feature.findFirst({
         where: { key: input.key, projectId: input.projectId },

@@ -8,3 +8,9 @@ export const useParams = (key: ParamsKeys) => {
 
   return router.query[key] as string;
 };
+
+export const useParameters = (keys: ParamsKeys[]) => {
+  const router = useRouter();
+
+  return keys.map((key) => router.query[key]) as string[];
+};

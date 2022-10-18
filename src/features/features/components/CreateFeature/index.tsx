@@ -17,9 +17,10 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Spinner,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   SubmitHandler,
   useForm,
@@ -32,12 +33,11 @@ import { CreateFeatureInput, createPlanInput } from "src/lib/schema";
 import { DrawerProps } from "src/typings";
 import { trpc } from "src/utils/trpc";
 
-const defaultValues: Omit<CreateFeatureInput, "projectId"> = {
+const defaultValues: Omit<CreateFeatureInput, "projectId" | "values"> = {
   name: "",
   key: "",
   description: "",
   featureType: "bool",
-  values: [],
 };
 
 type FeatureTypes = Pick<CreateFeatureInput, "featureType">;
@@ -55,7 +55,10 @@ export const CreateFeature = ({
   envKey,
 }: DrawerProps & { projectId: string; envKey: string }) => {
   const utils = trpc.useContext();
-  const { data: plans } = trpc.plans.list.useQuery({ projectId, envKey });
+  const { data: plans, isLoading: isLoadingPlans } = trpc.plans.list.useQuery(
+    { projectId, envKey },
+    { enabled: isOpen },
+  );
 
   const form = useForm<CreateFeatureInput>({
     resolver: zodResolver(createPlanInput),
@@ -69,23 +72,21 @@ export const CreateFeature = ({
   const { fields } = useFieldArray({ control: form.control, name: "values" });
 
   useEffect(() => {
-    if (plans)
-      form.setValue(
-        "values",
-        plans.map((plan) => ({
-          planId: plan.id,
-          name: plan.name,
-          value: false,
-        })),
-      );
+    if (!plans) return;
+
+    form.setValue(
+      "values",
+      plans.map((plan) => ({
+        planId: plan.id,
+        name: plan.name,
+        value: false,
+      })),
+    );
   }, [plans, form]);
 
   const { mutateAsync, isLoading, isSuccess } =
     trpc.features.create.useMutation({
-      onSuccess() {
-        utils.features.list.invalidate();
-        form.reset({ ...defaultValues, projectId });
-      },
+      onSuccess() {},
       onError({ data }) {
         if (data?.code === "CONFLICT") {
           const key = form.getValues("key");
@@ -95,6 +96,21 @@ export const CreateFeature = ({
         }
       },
     });
+
+  useEffect(() => {
+    if (!plans || !isSuccess) return;
+
+    utils.features.list.invalidate();
+    form.reset({
+      ...defaultValues,
+      projectId,
+      values: plans.map((plan) => ({
+        name: plan.name,
+        planId: plan.id,
+        value: false,
+      })),
+    });
+  }, [plans, isSuccess, form]);
 
   const handleSubmit: SubmitHandler<
     CreateFeatureInput
@@ -113,6 +129,35 @@ export const CreateFeature = ({
     }));
   }, []);
 
+  const handleChangeFeatureType = useCallback(
+    (featureType: FeatureTypes["featureType"]) => {
+      form.setValue("featureType", featureType);
+
+      if (featureType === "bool" && plans) {
+        form.setValue(
+          "values",
+          plans.map((plan) => ({
+            name: plan.name,
+            planId: plan.id,
+            value: false,
+          })),
+        );
+      }
+      if (featureType !== "bool" && plans) {
+        form.setValue(
+          "values",
+          plans.map((plan) => ({
+            name: plan.name,
+            planId: plan.id,
+            value: 0,
+          })),
+        );
+      }
+    },
+    [form, plans],
+  );
+
+  if (isLoadingPlans) return <Spinner />;
   if (!plans) return null;
 
   return (
@@ -155,7 +200,7 @@ export const CreateFeature = ({
           <FormLabel>Feature type</FormLabel>
           <RadioGroup
             onChange={(e) =>
-              form.setValue("featureType", e as FeatureTypes["featureType"])
+              handleChangeFeatureType(e as FeatureTypes["featureType"])
             }
             value={form.watch("featureType")}
           >

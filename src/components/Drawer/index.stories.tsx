@@ -1,3 +1,4 @@
+import { Button } from "@mantine/core";
 import { Meta, Story } from "@storybook/react";
 import { Drawer, Props } from "./";
 
@@ -6,7 +7,12 @@ export default {
   components: Drawer,
 } as Meta;
 
-const Template: Story<Props> = (args) => <Drawer {...args} />;
+const Template: Story<Props> = (args) => (
+  <>
+    <Button>Mantaine ui</Button>
+    <Drawer {...args} />
+  </>
+);
 
 export const Primary = Template.bind({});
 Primary.args = {

@@ -1,4 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
+import { MantineProvider } from "@mantine/core";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
@@ -14,10 +15,19 @@ function MyApp({
 
   return (
     <ChakraProvider theme={theme}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <SessionProvider session={session}>
-        {getLayout(<Component {...pageProps} session={session} />)}
-      </SessionProvider>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: "light",
+        }}
+      >
+        <ReactQueryDevtools initialIsOpen={false} />
+        <SessionProvider session={session}>
+          {getLayout(<Component {...pageProps} session={session} />)}
+        </SessionProvider>
+      </MantineProvider>
     </ChakraProvider>
   );
 }

@@ -44,7 +44,7 @@ const PlansPage: NextPageWithLayout = () => {
         }
       />
       {plans.length ? (
-        <PlanList plans={plans} />
+        <PlanList plans={plans} projectId={projectId} envKey={envKey} />
       ) : (
         <PlanEmptyState handleClick={onOpen} />
       )}
@@ -53,30 +53,53 @@ const PlansPage: NextPageWithLayout = () => {
   );
 };
 
-const PlanList = ({ plans }: { plans: Plan[] }) => (
+const PlanList = ({
+  plans,
+  projectId,
+  envKey,
+}: {
+  plans: Plan[];
+  projectId: string;
+  envKey: string;
+}) => (
   <Box border="1px" borderColor="gray.200" rounded="6px" mt={8}>
     {plans.map((plan) => (
-      <PlanListItem plan={plan} key={plan.id} />
+      <PlanListItem
+        plan={plan}
+        key={plan.id}
+        projectId={projectId}
+        envKey={envKey}
+      />
     ))}
   </Box>
 );
 
-const PlanListItem = ({ plan }: { plan: Plan }) => (
-  <Box borderBottom="1px" borderColor="gray.200" p={4} cursor="pointer">
-    <Link href="/" passHref>
-      <Box>
+const PlanListItem = ({
+  plan,
+  projectId,
+  envKey,
+}: {
+  plan: Plan;
+  projectId: string;
+  envKey: string;
+}) => (
+  <Link href={`/${projectId}/${envKey}/plans/${plan.id}`} passHref>
+    <a>
+      <Box borderBottom="1px" borderColor="gray.200" p={4} cursor="pointer">
         <Box>
-          <Heading fontSize="md">{plan.name}</Heading>
-          <Text fontSize="sm" color="gray.600">
-            {plan.description}
-          </Text>
+          <Box>
+            <Heading fontSize="md">{plan.name}</Heading>
+            <Text fontSize="sm" color="gray.600">
+              {plan.description}
+            </Text>
+          </Box>
+          <Tag size="sm" mt={2}>
+            {plan.key}
+          </Tag>
         </Box>
-        <Tag size="sm" mt={2}>
-          {plan.key}
-        </Tag>
       </Box>
-    </Link>
-  </Box>
+    </a>
+  </Link>
 );
 
 const AddPlanButton = ({ handleClick }: { handleClick: () => void }) => (
