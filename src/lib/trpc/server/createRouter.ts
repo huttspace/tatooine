@@ -8,6 +8,7 @@ export const t = initTRPC.context<Context>().create({ transformer: superjson });
 
 const isAuthed = t.middleware(async ({ ctx, next }) => {
   const session = await getSession(ctx);
+  console.log({ session });
   if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
 
   const user = await prisma.user.findUnique({
