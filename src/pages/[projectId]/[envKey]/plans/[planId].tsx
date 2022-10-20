@@ -1,5 +1,4 @@
-import { Spinner } from "@chakra-ui/react";
-import { Box } from "@chakra-ui/react";
+import { Box, Loader, Container } from "@mantine/core";
 import type { NextPageWithLayout } from "next";
 import { PageHeader } from "src/components";
 import { useParameters } from "src/hooks/useParams";
@@ -19,11 +18,11 @@ const PlanPage: NextPageWithLayout = () => {
     projectId,
   });
 
-  if (isLoadingPlan) return <Spinner />;
+  if (isLoadingPlan) return <Loader color="dark" size="lg" />;
   if (!plan) return null;
 
   return (
-    <Box>
+    <Container fluid={true} px={0}>
       <PageHeader title={plan.name} description={plan.description} />
       <Box>
         {plan.features.map((feature) => (
@@ -32,7 +31,7 @@ const PlanPage: NextPageWithLayout = () => {
           </Box>
         ))}
       </Box>
-    </Box>
+    </Container>
   );
 };
 

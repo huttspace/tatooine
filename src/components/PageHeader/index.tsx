@@ -1,4 +1,4 @@
-import { Box, Heading, VStack, Text } from "@chakra-ui/react";
+import { Text, Title, Stack, Container, Box } from "@mantine/core";
 import { ReactNode } from "react";
 
 export type Props = {
@@ -12,22 +12,15 @@ export const PageHeader = ({
   description,
   rightAlignedComponent,
 }: Props) => (
-  <Box
-    w="full"
-    display="flex"
-    justifyContent="space-between"
-    alignItems="flex-start"
-  >
-    <Box>
-      <VStack spacing={1} align="stretch">
-        <Heading fontSize="xl">{title}</Heading>
-        {description && (
-          <Text fontSize="sm" color="gray.500">
-            {description}
-          </Text>
-        )}
-      </VStack>
-    </Box>
-    <Box>{rightAlignedComponent && rightAlignedComponent}</Box>
-  </Box>
+  <Container fluid={true} p={0}>
+    <Stack spacing={4}>
+      <Title size="h2">{title}</Title>
+      {description && (
+        <Text size="sm" color="gray">
+          {description}
+        </Text>
+      )}
+    </Stack>
+    <Container>{rightAlignedComponent && rightAlignedComponent}</Container>
+  </Container>
 );
