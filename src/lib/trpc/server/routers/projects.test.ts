@@ -9,6 +9,7 @@ vi.mock("next-auth/react");
 test("example test", async () => {
   const ctx = await createContextInner({});
   const caller = appRouter.createCaller(ctx);
+
   const mockSession: Session = {
     expires: "1",
     user: { email: "nn829mm@gmail.com", id: "id", image: "", name: "Miki" },
