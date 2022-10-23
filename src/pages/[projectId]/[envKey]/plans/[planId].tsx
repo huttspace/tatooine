@@ -46,7 +46,7 @@ const PlanPage: NextPageWithLayout = () => {
           </Button>
         }
       />
-      <Table verticalSpacing="md" mt={24}>
+      <Table verticalSpacing="md" mt={24} highlightOnHover>
         <tbody>
           {plan.features.map((feature) => (
             <tr key={feature.name}>

@@ -51,6 +51,7 @@ export const useHooks = ({
     validate: zodResolver(createFeatureInput),
     validateInputOnChange: true,
     validateInputOnBlur: true,
+    clearInputErrorOnChange: false,
     initialValues: {
       projectId,
       featureType: "bool",

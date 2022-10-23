@@ -7,6 +7,7 @@ import {
   Button,
   Grid,
   Stack,
+  Table,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import type { NextPageWithLayout } from "next";
@@ -59,20 +60,38 @@ const FeaturesPage: NextPageWithLayout = () => {
 };
 
 const FeatureList = ({ features }: { features: Feature[] }) => (
-  <Stack align="stretch" mt={40}>
-    {features.map((feature) => (
-      <FeatureListItem feature={feature} key={feature.id} />
-    ))}
-  </Stack>
+  <Table verticalSpacing="md" horizontalSpacing="lg" mt={24} highlightOnHover>
+    <tbody>
+      {features.map((feature) => (
+        <tr key={feature.id}>
+          <td>
+            <Stack align="flex-start" spacing={4}>
+              <Link href={`/`} passHref>
+                <Text component="a" size="md" weight={500}>
+                  {feature.name}
+                </Text>
+              </Link>
+              <Badge radius="sm" size="sm" color="gray">
+                {feature.key}
+              </Badge>
+            </Stack>
+          </td>
+          <td>
+            <Badge size="md">{feature.featureType}</Badge>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
 );
 
 const FeatureListItem = ({ feature }: { feature: Feature }) => (
   <Container
     fluid={true}
-    p={24}
     m={0}
+    pb={16}
     sx={(theme) => ({
-      border: `1px solid ${theme.colors.gray[2]}`,
+      borderBottom: `1px solid ${theme.colors.gray[2]}`,
       borderRadius: "4px",
     })}
   >

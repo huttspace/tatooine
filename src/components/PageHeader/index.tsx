@@ -20,7 +20,7 @@ export const PageHeader = ({
     align="center"
   >
     <Stack spacing={4}>
-      <Title size="h2">{title}</Title>
+      <Title size="h3">{title}</Title>
       {description && (
         <Text size="sm" color="gray">
           {description}
