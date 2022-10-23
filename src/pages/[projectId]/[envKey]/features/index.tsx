@@ -1,13 +1,14 @@
-import { AddIcon } from "@chakra-ui/icons";
 import {
+  Container,
   Box,
-  Button,
-  useDisclosure,
-  Flex,
-  Heading,
   Text,
-  Tag,
-} from "@chakra-ui/react";
+  Title,
+  Badge,
+  Button,
+  Grid,
+  Stack,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import type { NextPageWithLayout } from "next";
 import Link from "next/link";
 import { PageHeader } from "src/components/";
@@ -27,79 +28,85 @@ const FeaturesPage: NextPageWithLayout = () => {
     envKey,
   });
 
-  const { onOpen, isOpen, onClose } = useDisclosure();
+  const [opened, { close, open }] = useDisclosure(false);
 
   if (!features) return null;
 
   return (
-    <Box h="full">
+    <Container fluid={true}>
       <PageHeader
         title="Features"
         description="This is features page"
         rightAlignedComponent={
           <Box>
-            <AddFeatureButton handleClick={onOpen} />
+            <AddFeatureButton handleClick={open} />
           </Box>
         }
       />
       {features.length ? (
         <FeatureList features={features} />
       ) : (
-        <FeatureEmptyState handleClick={onOpen} />
+        <FeatureEmptyState handleClick={open} />
       )}
       <CreateFeature
-        onClose={onClose}
-        isOpen={isOpen}
+        onClose={close}
+        isOpen={opened}
         projectId={projectId}
         envKey={envKey}
       />
-    </Box>
+    </Container>
   );
 };
 
 const FeatureList = ({ features }: { features: Feature[] }) => (
-  <Box border="1px" borderColor="gray.200" rounded="6px" mt={8}>
+  <Stack align="stretch" mt={40}>
     {features.map((feature) => (
       <FeatureListItem feature={feature} key={feature.id} />
     ))}
-  </Box>
+  </Stack>
 );
 
 const FeatureListItem = ({ feature }: { feature: Feature }) => (
-  <Box borderBottom="1px" borderColor="gray.200" p={4} cursor="pointer">
+  <Container
+    fluid={true}
+    p={16}
+    m={0}
+    sx={(theme) => ({
+      border: `1px solid ${theme.colors.gray[2]}`,
+      borderRadius: "4px",
+    })}
+  >
     <Link href="/" passHref>
-      <Box>
+      <a>
         <Box>
-          <Heading fontSize="md">{feature.name}</Heading>
-          <Text fontSize="sm" color="gray.600">
-            {feature.description}
-          </Text>
+          <Title size="h">{feature.name}</Title>
+          <Text>{feature.description}</Text>
         </Box>
-        <Tag size="sm" mt={2}>
+        <Badge size="xs" color="gray" mt={2}>
           {feature.key}
-        </Tag>
-      </Box>
+        </Badge>
+      </a>
     </Link>
-  </Box>
+  </Container>
 );
 
 const AddFeatureButton = ({ handleClick }: { handleClick: () => void }) => (
-  <Button onClick={handleClick} leftIcon={<AddIcon />}>
+  <Button onClick={handleClick} color="dark">
     New
   </Button>
 );
 
 const FeatureEmptyState = ({ handleClick }: { handleClick: () => void }) => (
-  <Flex
-    h={`calc(100% - ${HEADER_HEIGHT}px)`}
-    justifyContent="center"
-    alignItems="center"
+  <Grid
+    sx={{ height: `calc(100% - ${HEADER_HEIGHT}px)` }}
+    justify="center"
+    align="center"
   >
-    <Box textAlign="center">
-      <Heading fontSize="lg">Create first feature</Heading>
+    <Box>
+      <Title>Create first feature</Title>
       <AddFeatureButton handleClick={handleClick} />
     </Box>
-  </Flex>
+  </Grid>
 );
 
 FeaturesPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
