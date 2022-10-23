@@ -69,7 +69,7 @@ const FeatureList = ({ features }: { features: Feature[] }) => (
 const FeatureListItem = ({ feature }: { feature: Feature }) => (
   <Container
     fluid={true}
-    p={16}
+    p={24}
     m={0}
     sx={(theme) => ({
       border: `1px solid ${theme.colors.gray[2]}`,
