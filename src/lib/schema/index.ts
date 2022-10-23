@@ -34,13 +34,6 @@ export const createFeatureInput = z.object({
   key: z.string().min(1),
   description: z.string(),
   featureType: z.enum(["bool", "dailyLimit", "monthlyLimit"]),
-  values: z.array(
-    z.object({
-      planId: z.string().cuid(),
-      name: z.string(),
-      value: z.boolean().or(z.number()),
-    }),
-  ),
 });
 
 export type CreateFeatureInput = z.infer<typeof createFeatureInput>;

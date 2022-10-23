@@ -27,33 +27,27 @@ export const featureRouter = t.router({
 
       const environments = await ctx.prisma.environment.findMany({
         where: { projectId: input.projectId },
+        include: { environmentPlans: true },
       });
       if (!environments) throw new TRPCError({ code: "NOT_FOUND" });
 
       // Prisma.EnvironmentFeatureCreateManyFeatureInput
       const environmentFeatureCreateManyInput = environments
         .map((env) => {
-          return input.values.map((v) => {
+          return env.environmentPlans.map((v) => {
             return {
               environmentId: env.id,
               planId: v.planId,
-              bool:
-                input.featureType === "bool" && typeof v.value === "boolean"
-                  ? v.value
-                  : undefined,
-              limit:
-                input.featureType !== "bool" && typeof v.value === "number"
-                  ? v.value
-                  : undefined,
+              bool: input.featureType === "bool" ? false : undefined,
+              limit: input.featureType !== "bool" ? 0 : undefined,
             };
           });
         })
         .flat();
 
-      const { values, ...inputs } = input;
       const created = await ctx.prisma.feature.create({
         data: {
-          ...inputs,
+          ...input,
           environmentFeatures: {
             createMany: {
               data: environmentFeatureCreateManyInput,
@@ -64,6 +58,7 @@ export const featureRouter = t.router({
 
       return created;
     }),
+
   list: protectedProcedure
     .input(listFeatureInput)
     .query(async ({ ctx, input }) => {

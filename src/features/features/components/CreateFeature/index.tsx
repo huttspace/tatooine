@@ -1,43 +1,35 @@
 import {
-  VStack,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
+  Drawer,
+  Button,
+  Group,
+  TextInput,
   Textarea,
   Radio,
-  RadioGroup,
   Stack,
-  Switch,
-  Flex,
-  Text,
-  Divider,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Spinner,
-} from "@chakra-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect, useMemo } from "react";
-import {
-  SubmitHandler,
-  useForm,
-  useFieldArray,
-  FieldArrayWithId,
-  UseFormReturn,
-} from "react-hook-form";
-import { Drawer } from "src/components/Drawer";
-import { CreateFeatureInput, createPlanInput } from "src/lib/schema";
-import { DrawerProps } from "src/typings";
+  Grid,
+} from "@mantine/core";
+import { useForm, zodResolver, UseFormReturnType } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useMemo } from "react";
+import { createFeatureInput, CreateFeatureInput } from "src/lib/schema";
 import { trpc } from "src/utils/trpc";
 
-const defaultValues: Omit<CreateFeatureInput, "projectId" | "values"> = {
-  name: "",
-  key: "",
-  description: "",
-  featureType: "bool",
+type Form = UseFormReturnType<CreateFeatureInput>;
+
+type Props = {
+  projectId: string;
+  envKey: string;
+  onClose: () => void;
+  opened: boolean;
+};
+
+export type PresenterProps = {
+  opened: boolean;
+  onClose: () => void;
+  form: Form;
+  featureTypes: { key: string; value: string }[];
+  handelSubmit: (data: CreateFeatureInput) => void;
+  isLoadingCreateFeature: boolean;
 };
 
 type FeatureTypes = Pick<CreateFeatureInput, "featureType">;
@@ -48,79 +40,48 @@ const FEATURE_TYPES: { [key in FeatureTypes["featureType"]]: string } = {
   monthlyLimit: "Monthly Limit",
 };
 
-export const CreateFeature = ({
-  onClose,
-  isOpen,
+export const useHooks = ({
   projectId,
   envKey,
-}: DrawerProps & { projectId: string; envKey: string }) => {
-  const utils = trpc.useContext();
-  const { data: plans, isLoading: isLoadingPlans } = trpc.plans.list.useQuery(
-    { projectId, envKey },
-    { enabled: isOpen },
-  );
-
+}: {
+  projectId: string;
+  envKey: string;
+}) => {
   const form = useForm<CreateFeatureInput>({
-    resolver: zodResolver(createPlanInput),
-    mode: "all",
-    defaultValues: {
-      ...defaultValues,
+    validate: zodResolver(createFeatureInput),
+    validateInputOnChange: true,
+    validateInputOnBlur: true,
+    initialValues: {
       projectId,
+      featureType: "bool",
+      name: "",
+      key: "",
+      description: "",
     },
   });
 
-  const { fields } = useFieldArray({ control: form.control, name: "values" });
+  const utils = trpc.useContext();
+  const {
+    mutateAsync,
+    isLoading: isLoadingCreateFeature,
+    isSuccess: isSuccessCreateFeature,
+  } = trpc.features.create.useMutation({
+    onSuccess() {
+      utils.features.list.invalidate({ projectId, envKey });
+      form.reset();
+    },
+    onError({ data }) {
+      if (data?.code === "CONFLICT") {
+        const { key } = form.values;
+        form.setErrors({
+          key: `Key name ${key} already use another feature`,
+        });
+      }
+    },
+  });
 
-  useEffect(() => {
-    if (!plans) return;
-
-    form.setValue(
-      "values",
-      plans.map((plan) => ({
-        planId: plan.id,
-        name: plan.name,
-        value: false,
-      })),
-    );
-  }, [plans, form]);
-
-  const { mutateAsync, isLoading, isSuccess } =
-    trpc.features.create.useMutation({
-      onSuccess() {},
-      onError({ data }) {
-        if (data?.code === "CONFLICT") {
-          const key = form.getValues("key");
-          form.setError("key", {
-            message: `Key name ${key} already use another feature`,
-          });
-        }
-      },
-    });
-
-  useEffect(() => {
-    if (!plans || !isSuccess) return;
-
-    utils.features.list.invalidate();
-    form.reset({
-      ...defaultValues,
-      projectId,
-      values: plans.map((plan) => ({
-        name: plan.name,
-        planId: plan.id,
-        value: false,
-      })),
-    });
-  }, [plans, isSuccess, form]);
-
-  const handleSubmit: SubmitHandler<
-    CreateFeatureInput
-  > = async (/* data */) => {
-    // FIXME: featureType defect at args data
-    const values = form.getValues();
-    await mutateAsync({
-      ...values,
-    });
-  };
+  const handelSubmit = async (data: CreateFeatureInput) =>
+    await mutateAsync(data);
 
   const featureTypes = useMemo(() => {
     return Object.keys(FEATURE_TYPES).map((key) => ({
@@ -129,151 +90,101 @@ export const CreateFeature = ({
     }));
   }, []);
 
-  const handleChangeFeatureType = useCallback(
-    (featureType: FeatureTypes["featureType"]) => {
-      form.setValue("featureType", featureType);
-
-      if (featureType === "bool" && plans) {
-        form.setValue(
-          "values",
-          plans.map((plan) => ({
-            name: plan.name,
-            planId: plan.id,
-            value: false,
-          })),
-        );
-      }
-      if (featureType !== "bool" && plans) {
-        form.setValue(
-          "values",
-          plans.map((plan) => ({
-            name: plan.name,
-            planId: plan.id,
-            value: 0,
-          })),
-        );
-      }
-    },
-    [form, plans],
-  );
-
-  if (isLoadingPlans) return <Spinner />;
-  if (!plans) return null;
-
-  return (
-    <Drawer
-      isDone={isSuccess}
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Create new feature"
-      cta={form.handleSubmit(handleSubmit)}
-    >
-      <VStack spacing={6}>
-        <FormControl isInvalid={!!form.formState.errors["name"]}>
-          <FormLabel>Name</FormLabel>
-          <Input {...form.register("name")} autoFocus={true} />
-          <FormErrorMessage>
-            {form.formState.errors["name"] &&
-              form.formState.errors["name"].message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl isInvalid={!!form.formState.errors["key"]}>
-          <FormLabel>Key</FormLabel>
-          <Input {...form.register("key")} />
-          <FormErrorMessage>
-            {form.formState.errors["key"] &&
-              form.formState.errors["key"].message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Description</FormLabel>
-          <Textarea {...form.register("description")} />
-          <FormErrorMessage>
-            {form.formState.errors["description"] &&
-              form.formState.errors["description"].message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Feature type</FormLabel>
-          <RadioGroup
-            onChange={(e) =>
-              handleChangeFeatureType(e as FeatureTypes["featureType"])
-            }
-            value={form.watch("featureType")}
-          >
-            <Stack direction="row">
-              {featureTypes.map((type) => (
-                <Radio value={type.key} key={type.key}>
-                  {type.value}
-                </Radio>
-              ))}
-            </Stack>
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Plan Setting</FormLabel>
-          <VStack align="stretch" divider={<Divider />}>
-            {fields.map((field, index) =>
-              form.watch("featureType") === "bool" ? (
-                <BooleanInput
-                  key={field.id}
-                  field={field}
-                  form={form}
-                  index={index}
-                />
-              ) : (
-                <LimitInput
-                  key={field.id}
-                  field={field}
-                  form={form}
-                  index={index}
-                />
-              ),
-            )}
-          </VStack>
-        </FormControl>
-      </VStack>
-    </Drawer>
-  );
+  return {
+    form,
+    featureTypes,
+    handelSubmit,
+    isLoadingCreateFeature,
+    isSuccessCreateFeature,
+  };
 };
 
-type InputProps = {
-  field: FieldArrayWithId<CreateFeatureInput>;
-  form: UseFormReturn<CreateFeatureInput>;
-  index: number;
+export const CreateFeature = ({ projectId, envKey, ...props }: Props) => {
+  const { isSuccessCreateFeature, ...data } = useHooks({ projectId, envKey });
+
+  useEffect(() => {
+    if (isSuccessCreateFeature) props.onClose();
+  }, [isSuccessCreateFeature]);
+
+  return <CreateFeaturePresenter {...props} {...data} />;
 };
 
-const BooleanInput = ({ field, form, index }: InputProps) => {
-  return (
-    <Flex justify="space-between">
-      <Text>{field.name}</Text>
-      <Switch
-        onChange={(e) =>
-          form.setValue(`values.${index}.value`, e.target.checked)
-        }
-      />
-    </Flex>
-  );
-};
-
-const LimitInput = ({ field, form, index }: InputProps) => {
-  return (
-    <Flex justify="space-between">
-      <Text>{field.name}</Text>
-      <NumberInput
-        defaultValue={0}
-        onChange={(_, value) => form.setValue(`values.${index}.value`, value)}
+export const CreateFeaturePresenter = ({
+  opened,
+  onClose,
+  form,
+  featureTypes,
+  handelSubmit,
+  isLoadingCreateFeature,
+}: PresenterProps) => (
+  <Drawer
+    opened={opened}
+    onClose={onClose}
+    title="Register"
+    padding="xl"
+    size="xl"
+    position="right"
+  >
+    <form onSubmit={form.onSubmit(handelSubmit)} style={{ height: "100%" }}>
+      <Stack
+        justify="space-between"
+        align="stretch"
+        sx={{ height: "calc(100% - 48px)" }}
       >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-    </Flex>
-  );
-};
+        <Stack>
+          <TextInput
+            withAsterisk
+            label="Name"
+            placeholder="Awesome feature name"
+            data-autofocus
+            {...form.getInputProps("name")}
+            sx={{ borderRadius: "4px" }}
+          />
+
+          <TextInput
+            withAsterisk
+            label="Key"
+            placeholder="feature_key"
+            {...form.getInputProps("key")}
+            sx={{ borderRadius: "4px" }}
+          />
+
+          <Textarea label="Description" />
+
+          <Radio.Group
+            label="Feature type"
+            withAsterisk
+            value={form.values.featureType}
+            onChange={(value) =>
+              form.setValues({
+                featureType: value as FeatureTypes["featureType"],
+              })
+            }
+          >
+            {featureTypes.map((featureType) => (
+              <Radio
+                key={featureType.key}
+                value={featureType.key}
+                label={featureType.value}
+              />
+            ))}
+          </Radio.Group>
+        </Stack>
+
+        <Group position="right">
+          <Button size="sm" color="gray" variant="subtle" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            size="sm"
+            color="dark"
+            type="submit"
+            loading={isLoadingCreateFeature}
+          >
+            Add
+          </Button>
+        </Group>
+      </Stack>
+    </form>
+  </Drawer>
+);

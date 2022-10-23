@@ -50,7 +50,7 @@ const FeaturesPage: NextPageWithLayout = () => {
       )}
       <CreateFeature
         onClose={close}
-        isOpen={opened}
+        opened={opened}
         projectId={projectId}
         envKey={envKey}
       />
