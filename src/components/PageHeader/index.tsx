@@ -1,4 +1,4 @@
-import { Text, Title, Stack, Container, Box } from "@mantine/core";
+import { Text, Title, Stack, Container, Box, Grid } from "@mantine/core";
 import { ReactNode } from "react";
 
 export type Props = {
@@ -12,7 +12,13 @@ export const PageHeader = ({
   description,
   rightAlignedComponent,
 }: Props) => (
-  <Container fluid={true} p={0}>
+  <Grid
+    p={0}
+    m={0}
+    sx={{ width: "100%" }}
+    justify="space-between"
+    align="center"
+  >
     <Stack spacing={4}>
       <Title size="h2">{title}</Title>
       {description && (
@@ -21,6 +27,8 @@ export const PageHeader = ({
         </Text>
       )}
     </Stack>
-    <Container>{rightAlignedComponent && rightAlignedComponent}</Container>
-  </Container>
+    <Container fluid={true} m={0} p={0}>
+      {rightAlignedComponent && rightAlignedComponent}
+    </Container>
+  </Grid>
 );
