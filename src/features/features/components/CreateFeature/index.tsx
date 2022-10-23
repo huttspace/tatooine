@@ -171,8 +171,14 @@ export const CreateFeaturePresenter = ({
           </Radio.Group>
         </Stack>
 
-        <Group position="right">
-          <Button size="sm" color="gray" variant="subtle" onClick={onClose}>
+        <Group position="right" spacing={4}>
+          <Button
+            size="sm"
+            color="gray"
+            variant="subtle"
+            onClick={onClose}
+            sx={(theme) => ({ color: theme.colors.dark[9] })}
+          >
             Cancel
           </Button>
           <Button
