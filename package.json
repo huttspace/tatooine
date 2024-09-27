@@ -14,7 +14,7 @@
     "db:generate": "prisma generate",
     "sb": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "test:unit": "vitest run"
+    "test:unit": "DATABASE_URL='postgresql://prisma:prisma@localhost:54320/mydb?schema=public' vitest run"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.10",
@@ -72,7 +72,9 @@
     "eslint": "8.24.0",
     "eslint-config-next": "12.3.1",
     "eslint-config-prettier": "^8.5.0",
+    "jsdom": "^20.0.1",
     "lint-staged": "^13.0.3",
+    "node-mocks-http": "^1.11.0",
     "pathpida": "^0.18.1",
     "prettier": "^2.7.1",
     "prisma": "^4.3.1",

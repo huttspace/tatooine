@@ -9,3 +9,12 @@ export const createContext = async (
 };
 
 export type Context = trpc.inferAsyncReturnType<typeof createContext>;
+
+// For test
+interface CreateContextOptions {
+  // session: Session | null
+}
+
+export async function createContextInner(_opts: CreateContextOptions) {
+  return {};
+}
